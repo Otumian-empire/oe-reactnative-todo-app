@@ -1,5 +1,6 @@
-import { StatusBar } from "expo-status-bar";
+import { useState } from "react";
 import {
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -11,6 +12,22 @@ import {
 import Task from "./components/Task";
 
 export default function App() {
+  const [task, setTask] = useState("");
+  const [taskItems, setTaskItems] = useState([]);
+
+  const handleAddTask = () => {
+    Keyboard.dismiss();
+    if (task.length > 0) {
+      setTaskItems([...taskItems, task]);
+      setTask(null);
+    }
+  };
+
+  const handleCompleteTask = (index) => {
+    taskItems.splice(index, 1);
+    setTaskItems([...taskItems]);
+  };
+
   return (
     <View style={styles.container}>
       {/* Today's task */}
@@ -19,11 +36,14 @@ export default function App() {
 
         <View style={styles.items}>
           {/* this is where the tasks will go */}
-          <Task text={"Hello 1"} />
-          <Task text={"Hello 2"} />
-          <Task text={"Hello 3"} />
-          <Task text={"Hello 4"} />
-          <Task text={"Hello 5"} />
+          {taskItems.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleCompleteTask(index)}
+            >
+              <Task text={item} />
+            </TouchableOpacity>
+          ))}
         </View>
 
         {/* write a task */}
@@ -34,9 +54,11 @@ export default function App() {
           <TextInput
             style={styles.input}
             placeholder={"Write a task"}
+            value={task}
+            onChangeText={(text) => setTask(text)}
           ></TextInput>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => handleAddTask()}>
             <View style={styles.addWrapper}>
               <Text style={styles.addText}>{"+"}</Text>
             </View>
@@ -65,8 +87,8 @@ const styles = StyleSheet.create({
   },
   writeTaskWrapper: {
     position: "absolute",
-    // bottom: 60,
-    bottom: -190,
+    bottom: -60,
+    // bottom: -190,
     width: "100%",
     flexDirection: "row",
     justifyContent: "space-around",

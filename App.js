@@ -1,8 +1,11 @@
 import { useState } from "react";
 import {
+  Dimensions,
+  FlatList,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -34,17 +37,19 @@ export default function App() {
       <View style={styles.taskWrapper}>
         <Text style={styles.sectionTitle}>{"Today's tasks"}</Text>
 
-        <View style={styles.items}>
-          {/* this is where the tasks will go */}
-          {taskItems.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => handleCompleteTask(index)}
-            >
-              <Task text={item} />
-            </TouchableOpacity>
-          ))}
-        </View>
+        {/* this is where the tasks will go */}
+        <ScrollView style={styles.scroll}>
+          <View style={styles.items}>
+            {taskItems.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => handleCompleteTask(index)}
+              >
+                <Task text={item} />
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
 
         {/* write a task */}
         <KeyboardAvoidingView
@@ -114,4 +119,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   addText: {},
+  scroll: {
+    // taskWrapper:paddingTop: 80
+    // items: marginTop: 30
+    height: 0.8 * (Dimensions.get("screen").height - 80 - 30),
+  },
 });
